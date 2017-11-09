@@ -1,29 +1,7 @@
-;/****************************************Copyright (c)**************************************************
-;**                               ¹ãÖÝÖÜÁ¢¹¦µ¥Æ¬»ú·¢Õ¹ÓÐÏÞ¹«Ë¾
-;**                                     ÑÐ    ¾¿    Ëù
-;**                                        ²úÆ·Ò»²¿ 
-;**
-;**                                 http://www.zlgmcu.com
-;**
-;**--------------ÎÄ¼þÐÅÏ¢--------------------------------------------------------------------------------
-;**ÎÄ   ¼þ   Ãû: IRQ.inc
-;**´´   ½¨   ÈË: ³ÂÃ÷¼Æ
-;**×îºóÐÞ¸ÄÈÕÆÚ: 2004Äê8ÔÂ27ÈÕ
-;**Ãè        Êö: ¶¨ÒåIRQ»ã±à½Ó¿Ú´úÂëºê
-;**
-;**--------------ÀúÊ·°æ±¾ÐÅÏ¢----------------------------------------------------------------------------
-;** ´´½¨ÈË: ³ÂÃ÷¼Æ
-;** °æ  ±¾: v1.0
-;** ÈÕ¡¡ÆÚ: 2004Äê8ÔÂ27ÈÕ
-;** Ãè¡¡Êö: Ô­Ê¼°æ±¾
-;**
-;**--------------µ±Ç°°æ±¾ÐÞ¶©------------------------------------------------------------------------------
-;** ÐÞ¸ÄÈË:
-;** ÈÕ¡¡ÆÚ:
-;** Ãè¡¡Êö:
-;**
-;**------------------------------------------------------------------------------------------------------
-;********************************************************************************************************/
+;**æ–‡   ä»¶   å: IRQ.inc
+;**æœ€åŽä¿®æ”¹æ—¥æœŸ: 2004å¹´8æœˆ27æ—¥
+;**æ        è¿°: å®šä¹‰IRQæ±‡ç¼–æŽ¥å£ä»£ç å®
+
 
 NoInt       EQU 0x80
 
@@ -34,12 +12,12 @@ IRQ32Mode   EQU 0x12
 FIQ32Mode   EQU 0x11
 
 
-;ÒýÈëµÄÍâ²¿±êºÅÔÚÕâÉùÃ÷
-        IMPORT  OSIntCtxSw                      ;ÈÎÎñÇÐ»»º¯Êý
-        IMPORT  OSIntExit                       ;ÖÐ¶ÏÍË³öº¯Êý
+;å¼•å…¥çš„å¤–éƒ¨æ ‡å·åœ¨è¿™å£°æ˜Ž
+        IMPORT  OSIntCtxSw                      ;ä»»åŠ¡åˆ‡æ¢å‡½æ•°
+        IMPORT  OSIntExit                       ;ä¸­æ–­é€€å‡ºå‡½æ•°
         IMPORT  OSTCBCur
         IMPORT  OSTCBHighRdy
-        IMPORT  OSIntNesting                    ;ÖÐ¶ÏÇ¶Ì×¼ÆÊýÆ÷
+        IMPORT  OSIntNesting                    ;ä¸­æ–­åµŒå¥—è®¡æ•°å™¨
         IMPORT  StackUsr
         IMPORT  OsEnterSum
 
@@ -50,15 +28,15 @@ FIQ32Mode   EQU 0x11
     MACRO
 $IRQ_Label HANDLER $IRQ_Exception_Function
 
-        EXPORT  $IRQ_Label                      ; Êä³öµÄ±êºÅ
-        IMPORT  $IRQ_Exception_Function         ; ÒýÓÃµÄÍâ²¿±êºÅ
+        EXPORT  $IRQ_Label                      ; è¾“å‡ºçš„æ ‡å·
+        IMPORT  $IRQ_Exception_Function         ; å¼•ç”¨çš„å¤–éƒ¨æ ‡å·
 
 $IRQ_Label
-        SUB     LR, LR, #4                      ; ¼ÆËã·µ»ØµØÖ·
-        STMFD   SP!, {R0-R3, R12, LR}           ; ±£´æÈÎÎñ»·¾³
-        MRS     R3, SPSR                        ; ±£´æ×´Ì¬
-        STMFD   SP, {R3, SP, LR}^               ; ±£´æÓÃ»§×´Ì¬µÄR3,SP,LR,×¢Òâ²»ÄÜ»ØÐ´
-                                                ; Èç¹û»ØÐ´µÄÊÇÓÃ»§µÄSP£¬ËùÒÔºóÃæÒªµ÷ÕûSP
+        SUB     LR, LR, #4                      ; è®¡ç®—è¿”å›žåœ°å€
+        STMFD   SP!, {R0-R3, R12, LR}           ; ä¿å­˜ä»»åŠ¡çŽ¯å¢ƒ
+        MRS     R3, SPSR                        ; ä¿å­˜çŠ¶æ€
+        STMFD   SP, {R3, SP, LR}^               ; ä¿å­˜ç”¨æˆ·çŠ¶æ€çš„R3,SP,LR,æ³¨æ„ä¸èƒ½å›žå†™
+                                                ; å¦‚æžœå›žå†™çš„æ˜¯ç”¨æˆ·çš„SPï¼Œæ‰€ä»¥åŽé¢è¦è°ƒæ•´SP
         LDR     R2,  =OSIntNesting              ; OSIntNesting++
         LDRB    R1, [R2]
         ADD     R1, R1, #1
@@ -66,26 +44,26 @@ $IRQ_Label
 
         SUB     SP, SP, #4*3
         
-        MSR     CPSR_c, #(NoInt | SYS32Mode)    ; ÇÐ»»µ½ÏµÍ³Ä£Ê½
+        MSR     CPSR_c, #(NoInt | SYS32Mode)    ; åˆ‡æ¢åˆ°ç³»ç»Ÿæ¨¡å¼
         CMP     R1, #1
         LDREQ   SP, =StackUsr
         
-        BL      $IRQ_Exception_Function         ; µ÷ÓÃcÓïÑÔµÄÖÐ¶Ï´¦Àí³ÌÐò
+        BL      $IRQ_Exception_Function         ; è°ƒç”¨cè¯­è¨€çš„ä¸­æ–­å¤„ç†ç¨‹åº
 
-        MSR     CPSR_c, #(NoInt | SYS32Mode)    ; ÇÐ»»µ½ÏµÍ³Ä£Ê½
-        LDR     R2, =OsEnterSum                 ; OsEnterSum,Ê¹OSIntExitÍË³öÊ±ÖÐ¶Ï¹Ø±Õ
+        MSR     CPSR_c, #(NoInt | SYS32Mode)    ; åˆ‡æ¢åˆ°ç³»ç»Ÿæ¨¡å¼
+        LDR     R2, =OsEnterSum                 ; OsEnterSum,ä½¿OSIntExité€€å‡ºæ—¶ä¸­æ–­å…³é—­
         MOV     R1, #1
         STR     R1, [R2]
 
         BL      OSIntExit
 
-        LDR     R2, =OsEnterSum                 ; ÒòÎªÖÐ¶Ï·þÎñ³ÌÐòÒªÍË³ö£¬ËùÒÔOsEnterSum=0
+        LDR     R2, =OsEnterSum                 ; å› ä¸ºä¸­æ–­æœåŠ¡ç¨‹åºè¦é€€å‡ºï¼Œæ‰€ä»¥OsEnterSum=0
         MOV     R1, #0
         STR     R1, [R2]
 
-        MSR     CPSR_c, #(NoInt | IRQ32Mode)    ; ÇÐ»»»ØirqÄ£Ê½
-        LDMFD   SP, {R3, SP, LR}^               ; »Ö¸´ÓÃ»§×´Ì¬µÄR3,SP,LR,×¢Òâ²»ÄÜ»ØÐ´
-                                                ; Èç¹û»ØÐ´µÄÊÇÓÃ»§µÄSP£¬ËùÒÔºóÃæÒªµ÷ÕûSP
+        MSR     CPSR_c, #(NoInt | IRQ32Mode)    ; åˆ‡æ¢å›žirqæ¨¡å¼
+        LDMFD   SP, {R3, SP, LR}^               ; æ¢å¤ç”¨æˆ·çŠ¶æ€çš„R3,SP,LR,æ³¨æ„ä¸èƒ½å›žå†™
+                                                ; å¦‚æžœå›žå†™çš„æ˜¯ç”¨æˆ·çš„SPï¼Œæ‰€ä»¥åŽé¢è¦è°ƒæ•´SP
         LDR     R0, =OSTCBHighRdy
         LDR     R0, [R0]
         LDR     R1, =OSTCBCur
@@ -94,8 +72,8 @@ $IRQ_Label
 
         ADD     SP, SP, #4*3                    ; 
         MSR     SPSR_cxsf, R3
-        LDMEQFD SP!, {R0-R3, R12, PC}^          ; ²»½øÐÐÈÎÎñÇÐ»»
-        LDR     PC, =OSIntCtxSw                 ; ½øÐÐÈÎÎñÇÐ»»
+        LDMEQFD SP!, {R0-R3, R12, PC}^          ; ä¸è¿›è¡Œä»»åŠ¡åˆ‡æ¢
+        LDR     PC, =OSIntCtxSw                 ; è¿›è¡Œä»»åŠ¡åˆ‡æ¢
     MEND
 
     END
